@@ -1,6 +1,9 @@
 # Django Scrapy Statistics 
 Django web projection
-##Stage 1
+
+大家有时间多想一想，增加自己的想法
+
+## Stage 1
 ---------------------
 time: 2017-7-31
 
