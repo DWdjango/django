@@ -1,0 +1,2 @@
+# dj
+django web projection
