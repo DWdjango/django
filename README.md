@@ -21,3 +21,7 @@ time: 2017-8-01
 ```bash
 $ echo "自己的文件.md" >> .gitignore
 ```
+5. 将本地分支追踪服务器远程分支，分支就是名字的字母缩写：
+```bash
+$ git branch --set-upstream-to=origin/YourName YourName
+```
