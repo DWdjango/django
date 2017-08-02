@@ -85,5 +85,6 @@ class BaseModelManager(models.Manager):
             return obj
 ```
 - 通过给模板变量赋值，更改页面的登陆状态：
+
 ![Alt text](./pics/login.png "login")
 
