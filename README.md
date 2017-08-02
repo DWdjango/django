@@ -25,3 +25,62 @@ $ echo "自己的文件.md" >> .gitignore
 ```bash
 $ git branch --set-upstream-to=origin/YourName YourName
 ```
+---
+time: 2017-8-1
+
+#### 注意事项
+- python3 创建项目，数据迁移前，在项目里面的项目同名文件夹的`__init__.py`文件里面，加入：
+
+```python
+import pymysql
+
+pymysql.install_as_MySQLdb()
+```
+- 可以考虑利用装饰器保持登陆状态：
+```python
+from django.shortcuts import render
+
+
+def _login(func):
+    def wrapper(request):
+        if 'islogin' in request.session:
+            islogin = request.session['islogin']
+                if islogin:
+                    user = request.session['username']
+                    if user:
+                        return render(request, 'base.html', {'username':user})
+                else:
+                    return func(request)
+
+    return wrapper
+
+# 用法
+@_login
+def some_function():
+    pass
+
+```
+问题是如何自动获取待渲染页面文件作为参数
+- 给管理类抽象出基本管理类
+```python
+from django.db import models
+
+
+# 基类管理类
+class BaseModelManager(models.Manager):
+    # 根据参数自动判断有效字段并添加
+        def add_one(self, **kwargs):
+            # 获取类，就是Manager类
+            cls = self.model
+            kw = kwargs.copy()
+            for k in kw:
+                # 获取有效属性参数，无效的直接剔除
+                if k not in cls._meta.get_all_field_names():
+                    kwargs.pop(k)
+
+            # 实例化
+            obj = cls(**kwargs)
+
+            obj.save()
+            return obj
+```
