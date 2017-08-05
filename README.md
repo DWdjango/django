@@ -112,9 +112,9 @@ time: 2017-8-5
 1. `上一页`和`下一页`始终显示，且始终显示5条page按键
 
 
-![Alt text](./pics/pageinator2.png "")
+![Alt text](./pics/pageinator3.png "")
 
 2. 数字较大的页面始终显示在中间
 
-![Alt text](./pics/pageinator3.png "")
+![Alt text](./pics/pageinator2.png "")
 
