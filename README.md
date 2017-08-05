@@ -68,21 +68,38 @@ from django.db import models
 
 # 基类管理类
 class BaseModelManager(models.Manager):
+
+    def get_valid_fields(self):
+        """
+        获取模型管理器对象所在模型类的属性列表
+        """
+        # 获取模型管理器对象所在的模型类
+        cls = self.model
+        # 获取cls模型类的属性列表
+        attr_list = cls._meta.get_fields()
+        attr_str_list = []
+        for attr in attr_list:
+            if isinstance(attr, models.ForeignKey):
+                attr.name = '%s_id'%attr.name
+                attr_str_list.append(attr.name)
+        return attr_str_list
+                
     # 根据参数自动判断有效字段并添加
-        def add_one(self, **kwargs):
-            # 获取类，就是Manager类
-            cls = self.model
-            kw = kwargs.copy()
-            for k in kw:
-                # 获取有效属性参数，无效的直接剔除
-                if k not in cls._meta.get_all_field_names():
-                    kwargs.pop(k)
+    def add_one(self, **kwargs):
+        # 获取类，就是Manager类
+        cls = self.model
+        kw = kwargs.copy()
+        for k in kw:
+            # 获取有效属性参数，无效的直接剔除
+            if k not in self.get_valid_fields():
+                kwargs.pop(k)
+        # 实例化
+        obj = cls(**kwargs)
 
-            # 实例化
-            obj = cls(**kwargs)
+        obj.save()
+        return obj
 
-            obj.save()
-            return obj
+    ...
 ```
 - 通过给模板变量赋值，更改页面的登陆状态：
 
@@ -94,7 +111,6 @@ time: 2017-8-5
 #### 对Page inator 部分做了改进
 1. `上一页`和`下一页`始终显示，且始终显示5条page按键
 2. 数字较大的页面始终显示在中间
-
 
 
 
