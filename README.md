@@ -118,3 +118,14 @@ time: 2017-8-5
 
 ![Alt text](./pics/pageinator2.png "")
 
+---
+time: 2017-8-8
+
+#### 完善购物车界面
+1. 页面信息展示和数量操作
+
+![Alt text](./pics/cart.png)
+
+2. 删除功能
+
+![Alt text](./pics/delete.png)
