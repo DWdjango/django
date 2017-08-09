@@ -129,3 +129,22 @@ time: 2017-8-8
 2. 删除功能
 
 ![Alt text](./pics/delete.png)
+
+---
+time: 2017-8-9
+1. 引入事务
+```python
+from django.db import transaction
+@transaction.atomic
+def my_view(request):
+    # 事务保存点
+    save_id = transaction.savepoint()
+    try:
+        ...
+        transaction.savepoint_commit(save_id)
+    except Exception as e:
+        transaction.savepoint_rollback(save_id)
+```
+2. 支付界面
+
+![Alt text](./pics/支付.png)
