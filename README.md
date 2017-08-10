@@ -148,3 +148,75 @@ def my_view(request):
 2. 支付界面
 
 ![Alt text](./pics/支付.png)
+
+---
+time: 2017-8-10
+
+#### Django REST framework
+1. 将模型关联到用户模型上，在模型中增加字段
+```python
+owner = models.ForeignKey('auth.User', related_name='snippets', on_delete=models.CASCADE)
+```
+
+2. 定义用户模型
+```python
+from django.contrib.auth.models import User
+
+class UserSerializer(serializers.ModelSerializer):
+        snippets = serializers.PrimaryKeyRelatedField(many=True, queryset=Snippet.objects.all())
+        class Meta:
+            model = User
+            fields = ('id', 'username', 'snippets')
+```
+`PrimaryKeyRelated`指定`snippets`关联多个主键
+
+3. 定义用户视图
+```python
+from django.contrib.auth.models import User
+
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+```
+4. 定义用户url
+```python
+url(r'^users/$', views.UserList.as_view()),
+url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view()),
+```
+5. 因为已经在应用模型中定义了`owner`字段，则保存时关联user:
+```python
+def perform_create(self, serializer):
+    serializer.save(owner=self.request.user)
+```
+6. 模型的Serializer模型中添加字段`owner`并且注册到`Meta`的`field`里面:
+```python
+class SnippetSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+    class Meta:
+        model = Snippet
+        fields = ('id', 'owner', 'code', 'title', 'linenos', 'language', 'style')
+```
+7. 应用模型与用户关联好之后，需要在视图类里面添加许可，这样就能限制不同用户对应用的增删改查等行为了
+```python
+from rest_framework import permissions
+permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+```
+8. 在工程同名文件夹里面，增加用户登陆页面视图，REST自带的：
+```python
+urlpatterns += [
+    url(r'^api-auth/', include('rest_framework.urls',namespace='rest_framework')),
+]
+```
+9. 测试，事先安装`httpie`，不登陆进行POST提交，没有权限，失败了
+
+[!Alt_text](./pics/rest_no_auth.png)
+
+10. 测试，登陆之后才拥有创建的权限:
+
+[!Alt_text](./pics/rest_auth.png
