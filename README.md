@@ -215,8 +215,8 @@ urlpatterns += [
 ```
 9. 测试，事先安装`httpie`，不登陆进行POST提交，没有权限，失败了
 
-[!Alt_text](./pics/rest_no_auth.png)
+![Alt text](./pics/rest_no_auth.png)
 
 10. 测试，登陆之后才拥有创建的权限:
 
-[!Alt_text](./pics/rest_auth.png
+![Alt text](./pics/rest_auth.png)
